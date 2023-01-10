@@ -6,7 +6,11 @@ namespace CourseProject.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return RedirectToRoute(new 
+            {
+                controller = "Review",
+                action = "List"
+            });
         }
     }
 }

@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Review>
+<style>
+    .col-md-4 {
+        width: 33% !important;
+    }
+</style>
+@{
+    ViewData["Title"] = "List";
+}
+
+<h1>Reviews</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<div class="col-md-12">
+    <div class="row d-flex justify-content-around">
+        @foreach (var review in Model)
+        {
+            <div class="col-md-4 mt-2 card">
+                    @if (review.ImageUrl != "")
+                    {
+                        <img src="@review.ImageUrl" alt="Not Found" style="width: 100%" class="rounded-3 card-img-top" />
+                    }
+                    <div class="card-body">
+                        <h5 class="card-title">@review.RiviewName</h5>
+                        <p class="card-text">@(review.Description.Substring(0, 100) + "...")</p>
+                        <a asp-action="Details" asp-route-id="@review.Id" class="btn btn-primary text-white">Open Review</a>
+                    </div>
+            </div>
+        }
+    </div>
+</div>
+

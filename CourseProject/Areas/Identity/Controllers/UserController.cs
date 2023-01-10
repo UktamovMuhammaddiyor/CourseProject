@@ -128,5 +128,10 @@ namespace CourseProject.Areas.Identity.Controllers
             
             return View("ConfirmEmail", statusMessage);
         }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
     }
 }

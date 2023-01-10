@@ -65,5 +65,11 @@ namespace CourseProject.Controllers
             return View(reviewVM);
         }
 
+        public IActionResult List()
+        {
+            var review = _context.Reviews;
+
+            return View(review);
+        }
     }
 }
