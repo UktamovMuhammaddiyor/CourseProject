@@ -1,6 +1,7 @@
 using CourseProject.Areas.Identity.Data;
 using CourseProject.Data;
 using CourseProject.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -30,11 +31,20 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = true;
 });
 
+builder.Services.Configure<CookieAuthenticationOptions>(IdentityConstants.ApplicationScheme, options =>
+{
+    options.LoginPath = "/Identity/User/Login";
+    options.AccessDeniedPath = "/Identity/User/AccessDenied";
+});
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
+
+var context = app.Services.CreateScope().ServiceProvider.GetRequiredService<DataContext>();
+SeedData.SeedDatabase(context);
 
 app.MapControllers();
 
@@ -47,8 +57,9 @@ app.MapDefaultControllerRoute();
 
 app.MapRazorPages();
 
-app.UseAuthorization();
 app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.UseStaticFiles();
 app.Run();

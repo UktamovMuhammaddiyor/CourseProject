@@ -15,6 +15,7 @@ namespace CourseProject.Models
         [Range(0, 10)]
         public int Grade { get; set; }
         public IEnumerable<Tag> Tags { get; set; }
+        [Display(Name = "Image")]
         public string ImageUrl { get; set; } = "";
 
         public long LikesCount { get; set; } = 0;

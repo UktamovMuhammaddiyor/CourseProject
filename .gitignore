@@ -362,3 +362,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /CourseProject/creditionals.text
+/CourseProject/Services/EmailSender.cs
+/CourseProject/Services/EmailSender.cs
+/CourseProject/appsettings.json
