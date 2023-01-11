@@ -8,6 +8,9 @@
 
         public long ReviewId { get; set; }
 
+        public DateTime createdTime { get; set; }
+
         public IEnumerable<Review> Reviews { get; set; }
+
     }
 }

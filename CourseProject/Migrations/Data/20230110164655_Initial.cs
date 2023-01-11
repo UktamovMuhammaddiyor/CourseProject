@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -17,7 +18,8 @@ namespace CourseProject.Migrations.Data
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ReviewId = table.Column<long>(type: "bigint", nullable: false)
+                    ReviewId = table.Column<long>(type: "bigint", nullable: false),
+                    createdTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -34,7 +36,9 @@ namespace CourseProject.Migrations.Data
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Group = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Grade = table.Column<int>(type: "int", nullable: false),
+                    Tags = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    createdTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LikesCount = table.Column<long>(type: "bigint", nullable: false),
                     StarsCount = table.Column<long>(type: "bigint", nullable: false),
                     StarsSum = table.Column<long>(type: "bigint", nullable: false)
@@ -42,6 +46,19 @@ namespace CourseProject.Migrations.Data
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Reviews", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tags",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TagName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tags", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -69,55 +86,39 @@ namespace CourseProject.Migrations.Data
                 });
 
             migrationBuilder.CreateTable(
-                name: "LikedUsersId",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ReviewId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LikedUsersId", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_LikedUsersId_Reviews_ReviewId",
-                        column: x => x.ReviewId,
-                        principalTable: "Reviews",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ReviewedUsersId",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ReviewId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ReviewedUsersId", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ReviewedUsersId_Reviews_ReviewId",
-                        column: x => x.ReviewId,
-                        principalTable: "Reviews",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Tag",
+                name: "LikedUsersIds",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TagName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    userId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ReviewId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tag", x => x.Id);
+                    table.PrimaryKey("PK_LikedUsersIds", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Tag_Reviews_ReviewId",
+                        name: "FK_LikedUsersIds_Reviews_ReviewId",
+                        column: x => x.ReviewId,
+                        principalTable: "Reviews",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ReviewedUsersIds",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    userId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ReviewId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReviewedUsersIds", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ReviewedUsersIds_Reviews_ReviewId",
                         column: x => x.ReviewId,
                         principalTable: "Reviews",
                         principalColumn: "Id",
@@ -130,18 +131,13 @@ namespace CourseProject.Migrations.Data
                 column: "ReviewsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LikedUsersId_ReviewId",
-                table: "LikedUsersId",
+                name: "IX_LikedUsersIds_ReviewId",
+                table: "LikedUsersIds",
                 column: "ReviewId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ReviewedUsersId_ReviewId",
-                table: "ReviewedUsersId",
-                column: "ReviewId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tag_ReviewId",
-                table: "Tag",
+                name: "IX_ReviewedUsersIds_ReviewId",
+                table: "ReviewedUsersIds",
                 column: "ReviewId");
         }
 
@@ -152,13 +148,13 @@ namespace CourseProject.Migrations.Data
                 name: "CommentReview");
 
             migrationBuilder.DropTable(
-                name: "LikedUsersId");
+                name: "LikedUsersIds");
 
             migrationBuilder.DropTable(
-                name: "ReviewedUsersId");
+                name: "ReviewedUsersIds");
 
             migrationBuilder.DropTable(
-                name: "Tag");
+                name: "Tags");
 
             migrationBuilder.DropTable(
                 name: "Comments");

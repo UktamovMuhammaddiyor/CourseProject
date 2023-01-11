@@ -1,10 +1,12 @@
 ﻿using CourseProject.Areas.Identity.Data;
 using CourseProject.Data;
 using CourseProject.Models;
+using CourseProject.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CourseProject.Controllers
 {
@@ -12,15 +14,17 @@ namespace CourseProject.Controllers
     {
         private DataContext _context;
         private SignInManager<AddFieldToUser> _signInManager;
+        private UserManager<AddFieldToUser> _userManager;
 
-        public ReviewController(DataContext context, SignInManager<AddFieldToUser> signInManager)
+        public ReviewController(DataContext context, SignInManager<AddFieldToUser> signInManager, UserManager<AddFieldToUser> userManager)
         {
             _context = context;
             _signInManager = signInManager;
+            _userManager = userManager;
         }
 
         // GET: ReviewController
-        public async Task<IActionResult> Index(long id)
+        public IActionResult Index()
         {
             //Review review = await _context.Reviews.FindAsync(id);
             return View();
@@ -29,24 +33,41 @@ namespace CourseProject.Controllers
         // GET: ReviewController/Details/5
         public async Task<IActionResult> Details(long id)
         {
-            Review review = await _context.Reviews.FindAsync(id);
-            return View(review);
-        }
+            Review review = await _context.Reviews.Include(l => l.LikedUsersIds).FirstOrDefaultAsync(r => r.Id == id);
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            var like = review.LikedUsersIds.FirstOrDefault(l => l.userId == user.Id);
 
-        // GET: ReviewController/Create
-        public IActionResult Create()
-        {
-            if (_signInManager.IsSignedIn(User))
+            ReviewViewModel reviewVM = new ReviewViewModel
             {
-                return View();
+                Id = review.Id,
+                RiviewName = review.RiviewName,
+                Description = review.Description,
+                Grade = review.Grade,
+                Group = review.Group,
+                Tags = review.Tags,
+                ImageUrl = review.ImageUrl,
+                createdTime = review.createdTime,
+                StarsCount = review.StarsCount,
+                StarsSum = review.StarsSum,
+                LikedUsersIds = review.LikedUsersIds,
+                ReviewedUsersIds = review.ReviewedUsersIds,
+                Comments = review.Comments,
+                isLiked = false,
+                userId = user.UserName
+            };
+
+            if (like != null)
+            {
+                reviewVM.isLiked = true;
             }
 
-            return RedirectToRoute(new 
-            {
-                area = "Identity",
-                controller = "User",
-                action = "AccessDenied"
-            });
+            return View(reviewVM);
+        }
+
+        [Authorize]
+        public IActionResult Create()
+        {
+            return View();
         }
 
         // POST: ReviewController/Create

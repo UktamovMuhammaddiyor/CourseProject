@@ -1,7 +1,6 @@
-﻿@model Review
-
+﻿@model ReviewViewModel
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Detail";
 }
 
 <div class="col-md-12">
@@ -12,6 +11,19 @@
             {
                 <img src="@Model.ImageUrl" alt="Not Found" style="width: 100%" class="rounded-3" />
             }
+            @if (Model.isLiked)
+            {
+                <div id="like">
+                    <a id="unlikereview"><i class="bi bi-heart-fill text-danger fs-4" onclick="unlike()"></i></a> Liked @Model.LikesCount users.
+                </div>
+            }
+            else
+            {
+                <div id="like">
+                    <a id="likereview"><i class="bi bi-heart text-danger fs-4"></i></a> Liked @Model.LikesCount users.
+                </div>
+            }
+
         </div>
         <div class="col-md-6">
             <div class="text-center bg-info text-white">
@@ -34,6 +46,20 @@
             <div class="text-center bg-info text-white mt-2">
                 Group | @Model.Group
             </div>
+            <div class="text-center bg-info text-white mt-2">
+                Created Time | @Model.createdTime
+            </div>
         </div>
     </div>
 </div>
+@section Scripts {
+    <script>
+        const unlike = async () => {
+            let islike = "";
+            let username = (@Model.userId).toString()
+            let reviewid = (@Model.Id).toString()
+            await fetch("http://localhost:3000/api/like?userName=" + username + "&reviewId=" + reviewid, { headers: { 'Accept': "Courseproject" }, method: 'POST' }).then((response) => islike = response.json())
+            console.log(islike["value"])
+        }
+    </script>
+}

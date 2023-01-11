@@ -6,7 +6,7 @@ namespace CourseProject.Controllers
     {
         public IActionResult Index()
         {
-            return RedirectToRoute(new 
+            return RedirectToRoute(new
             {
                 controller = "Review",
                 action = "List"

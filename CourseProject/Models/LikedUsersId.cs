@@ -2,7 +2,9 @@
 {
     public class LikedUsersId
     {
-        public string Id { get; set; }
+        public long Id { get; set; }
+
+        public string userId { get; set; }
 
         public long ReviewId { get; set; }
 

@@ -1,21 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CourseProject.Models
+namespace CourseProject.Models.ViewModels
 {
-    public class Review
+    public class ReviewViewModel
     {
         public long Id { get; set; }
-        [Required]
         public string RiviewName { get; set; }
-        [Required]
         public string Description { get; set; }
-        [Required]
         public string Group { get; set; }
-        [Required]
-        [Range(0, 10)]
         public int Grade { get; set; }
         public string Tags { get; set; }
-        [Display(Name = "Image")]
         public string ImageUrl { get; set; } = "";
 
         public DateTime createdTime { get; set; }
@@ -28,5 +22,7 @@ namespace CourseProject.Models
 
         public IEnumerable<Comment> Comments { get; set; }
 
+        public string userId { get; set; }
+        public bool isLiked { get; set; }
     }
 }
